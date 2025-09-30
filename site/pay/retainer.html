@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>Start Retainer – ArchitectAI Consulting</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/site/styles.css" />
+</head><body>
+  <div class="container narrow">
+    <h1>Start Monthly Retainer</h1>
+    <form id="retainer-form">
+      <label>Company</label><input name="company" required>
+      <label>Your Name</label><input name="name" required>
+      <label>Email</label><input type="email" name="email" required>
+      <label>Focus</label>
+      <select name="focus">
+        <option value="architecture">Architecture</option>
+        <option value="ai">AI Integrations</option>
+        <option value="n8n">n8n Automations</option>
+        <option value="code-review">Code/Arch Review</option>
+      </select>
+      <label>Notes</label><textarea name="notes" rows="4"></textarea>
+      <button class="btn" type="submit">Start Subscription</button>
+    </form>
+    <div id="status" style="margin-top:1rem;"></div>
+  </div>
+<script>
+document.getElementById('retainer-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = document.getElementById('status');
+  status.textContent = 'Redirecting to secure checkout…';
+  const payload = Object.fromEntries(new FormData(e.target).entries());
+  try {
+    const res = await fetch('https://YOUR_BACKEND/stripe/subscription', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Request failed');
+    const data = await res.json();
+    window.location.href = data.url;
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message;
+  }
+});
+</script>
+</body></html>

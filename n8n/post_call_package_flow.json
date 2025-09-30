@@ -1,0 +1,122 @@
+{
+  "name": "Post-Call Package Email",
+  "nodes": [
+    {
+      "id": "wh",
+      "type": "n8n-nodes-base.webhook",
+      "name": "Webhook (post-call)",
+      "parameters": {
+        "path": "post-call",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "id": "wait",
+      "type": "n8n-nodes-base.wait",
+      "name": "Wait until end",
+      "parameters": {
+        "waitTill": "specific_time",
+        "timeToWait": "={{$json.followup_at}}"
+      }
+    },
+    {
+      "id": "set",
+      "type": "n8n-nodes-base.set",
+      "name": "Compose Links",
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "email",
+              "value": "={{$json.email}}"
+            },
+            {
+              "name": "name",
+              "value": "={{$json.name}}"
+            },
+            {
+              "name": "company",
+              "value": "={{$json.company}}"
+            },
+            {
+              "name": "focus",
+              "value": "={{$json.focus}}"
+            },
+            {
+              "name": "retainer_link",
+              "value": "={{$json.retainer_link}}"
+            },
+            {
+              "name": "proposal_link",
+              "value": "={{$json.proposal_link}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tmpl",
+      "type": "n8n-nodes-base.function",
+      "name": "Render Email",
+      "parameters": {},
+      "functionCode": "        const tmpl = `Hi {{name}},\n\nThanks for the call about {{company}} (focus: {{focus}}).\n\n**Start Retainer (Monthly)**: {{retainer_link}}\n**Project-Based Proposal**: {{proposal_link}}\n\nCheers,\nArchitectAI Consulting`;\n        let body = tmpl\n          .replace(/{{name}}/g, $json.name)\n          .replace(/{{company}}/g, $json.company)\n          .replace(/{{focus}}/g, $json.focus)\n          .replace(/{{retainer_link}}/g, $json.retainer_link)\n          .replace(/{{proposal_link}}/g, $json.proposal_link);\n        return [{ json: { email: $json.email, subject: 'Your next step', body } }];\n"
+    },
+    {
+      "id": "send",
+      "type": "n8n-nodes-base.emailSend",
+      "name": "Send Email",
+      "parameters": {
+        "toEmail": "={{$json.email}}",
+        "subject": "={{$json.subject}}",
+        "text": "={{$json.body}}"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook (post-call)": {
+      "main": [
+        [
+          {
+            "node": "Wait until end",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait until end": {
+      "main": [
+        [
+          {
+            "node": "Compose Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose Links": {
+      "main": [
+        [
+          {
+            "node": "Render Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Render Email": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

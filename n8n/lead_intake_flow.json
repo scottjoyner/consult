@@ -1,0 +1,37 @@
+{
+  "name": "Lead Intake",
+  "nodes": [
+    {
+      "id": "webhook",
+      "type": "n8n-nodes-base.webhook",
+      "name": "Webhook (lead-intake)",
+      "parameters": {
+        "path": "lead-intake",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "id": "email",
+      "type": "n8n-nodes-base.emailSend",
+      "name": "Email Sales",
+      "parameters": {
+        "toEmail": "contact@architectai.consulting",
+        "subject": "New Lead",
+        "text": "{{$json.company}} {{$json.name}} {{$json.email}} {{$json.topic}}"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook (lead-intake)": {
+      "main": [
+        [
+          {
+            "node": "Email Sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

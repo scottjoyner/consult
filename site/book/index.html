@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Book Intro – ArchitectAI Consulting</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/site/styles.css" />
+</head>
+<body>
+<div class="container narrow">
+  <h1>Book a 25-minute Intro ($100)</h1>
+  <p>We’ll review goals and recommend a package by email after the call.</p>
+  <form id="book-form">
+    <label>Company</label><input name="company" required />
+    <label>Your Name</label><input name="name" required />
+    <label>Email</label><input type="email" name="email" required />
+    <label>Preferred Date</label><input type="date" name="date" required />
+    <label>Preferred Time</label><input type="time" name="time" required />
+    <label>Focus</label>
+    <select name="focus">
+      <option value="architecture">Architecture</option>
+      <option value="ai">AI Integrations</option>
+      <option value="n8n">n8n Automations</option>
+      <option value="code-review">Code/Arch Review</option>
+    </select>
+    <label>Context (optional)</label><textarea name="notes" rows="5"></textarea>
+    <button class="btn" type="submit">Continue to Payment</button>
+  </form>
+  <div id="status" style="margin-top:1rem;"></div>
+</div>
+<script src="./book.js"></script>
+</body>
+</html>
