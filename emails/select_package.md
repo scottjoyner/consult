@@ -14,4 +14,6 @@ Based on our discussion (focus: {{focus}}), here are recommended next steps:
 
 If you have any questions, reply to this email. Looking forward to partnering!
 
-— ArchitectAI Consulting
+— Campbell Cognition Consultants LLC
+
+P.S. Your Campbell Companion workspace stays active for shared notes and AI summaries.

@@ -60,7 +60,7 @@
       "type": "n8n-nodes-base.function",
       "name": "Render Email",
       "parameters": {},
-      "functionCode": "        const tmpl = `Hi {{name}},\n\nThanks for the call about {{company}} (focus: {{focus}}).\n\n**Start Retainer (Monthly)**: {{retainer_link}}\n**Project-Based Proposal**: {{proposal_link}}\n\nCheers,\nArchitectAI Consulting`;\n        let body = tmpl\n          .replace(/{{name}}/g, $json.name)\n          .replace(/{{company}}/g, $json.company)\n          .replace(/{{focus}}/g, $json.focus)\n          .replace(/{{retainer_link}}/g, $json.retainer_link)\n          .replace(/{{proposal_link}}/g, $json.proposal_link);\n        return [{ json: { email: $json.email, subject: 'Your next step', body } }];\n"
+      "functionCode": "        const tmpl = `Hi {{name}},\n\nThanks for the call about {{company}} (focus: {{focus}}).\n\n**Start Retainer (Monthly)**: {{retainer_link}}\n**Project-Based Proposal**: {{proposal_link}}\n\nCheers,\nCampbell Cognition Consultants LLC`;\n        let body = tmpl\n          .replace(/{{name}}/g, $json.name)\n          .replace(/{{company}}/g, $json.company)\n          .replace(/{{focus}}/g, $json.focus)\n          .replace(/{{retainer_link}}/g, $json.retainer_link)\n          .replace(/{{proposal_link}}/g, $json.proposal_link);\n        return [{ json: { email: $json.email, subject: 'Your next step', body } }];\n"
     },
     {
       "id": "send",
