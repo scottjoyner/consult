@@ -15,7 +15,7 @@
       "type": "n8n-nodes-base.emailSend",
       "name": "Email Sales",
       "parameters": {
-        "toEmail": "contact@architectai.consulting",
+        "toEmail": "hello@campbellcognition.com",
         "subject": "New Lead",
         "text": "{{$json.company}} {{$json.name}} {{$json.email}} {{$json.topic}}"
       }

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8" />
-<title>Booked – ArchitectAI Consulting</title>
+<title>Booked – Campbell Cognition Consultants LLC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="stylesheet" href="/site/styles.css" /></head>
 <body>
@@ -10,5 +10,24 @@
   <p>We’re placing your consultation on the calendar and emailing the invite.</p>
   <p>After the call, you’ll receive an email to select a package.</p>
   <p>Meanwhile, you can review our <a href="/proposal/proposal.html">proposal</a> or <a href="/retainer/retainer.html">retainer</a>.</p>
+  <p class="muted">Questions before we meet? Email <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a>.</p>
+  <div id="client-companion-card" class="card hidden" aria-hidden="true">
+    <h2>Campbell Companion (beta)</h2>
+    <p>We’ve unlocked a private workspace with AI-assisted summaries and next-step prompts tailored to your engagement, complete with Highland-inspired briefings.</p>
+    <a class="btn" href="/site/client/companion.html">Open the companion</a>
+    <p class="muted small">Only available to clients with an active payment. Bookmark the link for future sessions.</p>
+  </div>
 </div>
+<script>
+  try {
+    localStorage.setItem('campbellcognition_client_paid', 'true');
+    const card = document.getElementById('client-companion-card');
+    if (card) {
+      card.classList.remove('hidden');
+      card.setAttribute('aria-hidden', 'false');
+    }
+  } catch (err) {
+    console.warn('Client companion unlock skipped:', err);
+  }
+</script>
 </body></html>
