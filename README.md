@@ -1,24 +1,52 @@
-# consulting-docs
+# Campbell Cognition Consultants – container-first stack
 
-Lead-gen website + modular contracts + Stripe + Google Calendar + n8n automation.
+This repository contains the Campbell Cognition Consultants LLC marketing and client enablement experience:
 
-## Quick start
+- A static site with booking flows, offer breakdowns, testimonials, and legal policies.
+- A Node.js backend that orchestrates Stripe checkouts, Google Calendar automation, n8n follow-ups, and Neo4j-backed analytics.
+- A Docker-first architecture (frontend, backend, Neo4j) with CI/CD validation.
 
-- Edit `server/node/.env` (copy `.env.example`)
-- Deploy `server/node` (Render/Fly/Railway/etc.)
-- Serve `site/` via GitHub Pages or any static host
-- Configure Stripe webhooks → `https://YOUR_BACKEND/stripe/webhook`
-- Configure n8n endpoints:
-  - `POST /webhook/lead-intake`
-  - `POST /webhook/post-call`
+## Architecture overview
 
-## Post-call automation
+| Service   | Tech | Purpose |
+|-----------|------|---------|
+| `frontend` | Nginx serving `/site` | Marketing site, proof-of-work section, booking & legal pages with consent-aware analytics instrumentation. |
+| `backend`  | Node.js (Express) | Stripe checkout sessions, Google Calendar scheduling, webhook intake, analytics event API, and metrics aggregation. |
+| `neo4j`    | Neo4j 5.x | Stores consented visitor sessions, user actions, conversion events, and powers the live funnel metrics. |
 
-Backend calls n8n `/webhook/post-call` with:
-```json
-{ "email": "...", "name": "...", "company": "...", "focus": "ai",
-  "followup_at": "2025-10-01T15:30:00Z",
-  "retainer_link": "https://YOUR_DOMAIN/site/pay/retainer.html",
-  "proposal_link": "https://YOUR_DOMAIN/proposal/proposal.html" }
-```
-n8n waits until `followup_at`, sends email with package links.
+Analytics events are only persisted when visitors accept cookies via the consent banner. Events are written to Neo4j and surfaced on the homepage metrics cards via `GET /analytics/metrics`.
+
+## Getting started locally
+
+1. Copy the example environment variables and update values for your infrastructure:
+   ```bash
+   cp .env.example .env
+   ```
+2. Edit `.env` with Stripe keys, Google service account details, webhook URLs, and Neo4j credentials. The defaults assume containerised local development.
+3. Build and run the stack:
+   ```bash
+   docker compose up --build
+   ```
+   - Frontend: <http://localhost:8080>
+   - Backend API: <http://localhost:8081>
+   - Neo4j Browser: <http://localhost:7474> (login with the credentials in `.env`).
+4. Update the `<meta name="consult-backend">` tag in the HTML (or set `window.__CONSULT_BACKEND__`) when deploying to production so the frontend analytics and booking flows point to your live backend domain.
+5. Configure Stripe webhooks to call `https://YOUR_BACKEND/stripe/webhook` and update Google Calendar / n8n credentials in the environment file.
+
+## CI/CD
+
+GitHub Actions (`.github/workflows/ci.yml`) lint the backend and render the Compose configuration on every push/PR. Extend the workflow with integration tests as services evolve.
+
+## Analytics & metrics
+
+- `POST /analytics/events` persists visit, CTA, conversion, and companion usage events in Neo4j.
+- `GET /analytics/metrics` returns aggregate visitors, actions, conversions, and conversion rate for homepage reporting.
+- Frontend instrumentation lives in `site/scripts/analytics.js` with a consent banner, auto-tracking hooks, and helper APIs (`window.cccAnalytics`).
+
+## Legal center
+
+Visitors can review the terms, privacy policy, and cookie notice under `/site/legal/`. The consent modal references these pages and is required for analytics tracking.
+
+## Proof of work
+
+The homepage highlights Scott Joyner’s GitHub portfolio for prospective customers. Update the links under `site/index.html` as new public artifacts become available.

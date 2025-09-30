@@ -1,0 +1,12 @@
+FROM node:20-alpine
+WORKDIR /app
+
+COPY server/node/package.json ./package.json
+RUN npm install --production --prefer-offline --no-audit --progress=false || \
+    (echo "Falling back to cached node_modules" && exit 1)
+
+COPY server/node/index.js ./index.js
+
+ENV NODE_ENV=production
+EXPOSE 8081
+CMD ["node", "index.js"]

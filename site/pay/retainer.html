@@ -1,10 +1,13 @@
 <!doctype html>
-<html><head>
+<html lang="en">
+<head>
   <meta charset="utf-8" />
   <title>Start Retainer – Campbell Cognition Consultants LLC</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="consult-backend" content="http://localhost:8081" />
   <link rel="stylesheet" href="/site/styles.css" />
-</head><body>
+</head>
+<body>
   <div class="container narrow">
     <h1>Start Monthly Retainer</h1>
     <p>Anchor your engagement with Campbell Cognition Consultants LLC and keep a Scottish-guided advisory team on call.</p>
@@ -25,23 +28,46 @@
     <div id="status" style="margin-top:1rem;"></div>
     <p class="muted small">Need assistance? Email <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a>.</p>
   </div>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong>Campbell Cognition Consultants LLC</strong><br>
+      <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a>
+    </div>
+    <nav>
+      <a href="/site/offerings/">Offerings</a>
+      <a href="/site/legal/terms.html">Terms &amp; Conditions</a>
+      <a href="/site/legal/privacy.html">Privacy Policy</a>
+      <a href="/site/legal/cookies.html">Cookie Notice</a>
+    </nav>
+  </div>
+</footer>
+<script type="module" src="/site/scripts/analytics.js"></script>
 <script>
-document.getElementById('retainer-form').addEventListener('submit', async (e) => {
+const form = document.getElementById('retainer-form');
+const status = document.getElementById('status');
+const backendMeta = document.querySelector('meta[name="consult-backend"]');
+const backendBase = (window.cccAnalytics?.backendUrl || backendMeta?.content || '').replace(/\/$/, '');
+
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const status = document.getElementById('status');
   status.textContent = 'Redirecting to secure checkout…';
-  const payload = Object.fromEntries(new FormData(e.target).entries());
+  window.cccAnalytics?.track('subscription_initiated', { plan: 'retainer' });
+  const payload = Object.fromEntries(new FormData(form).entries());
   try {
-    const res = await fetch('https://YOUR_BACKEND/stripe/subscription', {
+    if (!backendBase) throw new Error('Backend URL is not configured.');
+    const res = await fetch(`${backendBase}/stripe/subscription`, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Request failed');
     const data = await res.json();
+    window.cccAnalytics?.track('conversion', { source: 'retainer', stage: 'subscription-url-issued' });
     window.location.href = data.url;
   } catch (err) {
     status.textContent = 'Error: ' + err.message;
   }
 });
 </script>
-</body></html>
+</body>
+</html>

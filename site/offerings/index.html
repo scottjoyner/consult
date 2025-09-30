@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <title>Offerings – Campbell Cognition Consultants LLC</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="consult-backend" content="http://localhost:8081" />
   <link rel="stylesheet" href="/site/styles.css" />
 </head>
 <body>
@@ -61,18 +62,29 @@
   </section>
 
   <div class="cta-row">
-    <a class="btn" href="/site/book/">Book Clarity Call ($100)</a>
+    <a class="btn" href="/site/book/" data-analytics-event="conversion" data-analytics-properties='{"location":"offerings","action":"book-clarity-call"}'>Book Clarity Call ($100)</a>
   </div>
 </main>
 
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div><strong>Campbell Cognition Consultants LLC</strong><br><a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a></div>
+    <div>
+      <strong>Campbell Cognition Consultants LLC</strong><br>
+      <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a>
+    </div>
     <nav>
       <a href="/site/contact/">Contact</a>
       <a href="/site/sign/">Sign</a>
+      <a href="/site/legal/terms.html">Terms &amp; Conditions</a>
+      <a href="/site/legal/privacy.html">Privacy Policy</a>
+      <a href="/site/legal/cookies.html">Cookie Notice</a>
     </nav>
+    <div>
+      <strong>Proof of work</strong><br>
+      <a href="https://github.com/scottjoyner" target="_blank" rel="noopener" data-analytics-event="outbound_click" data-analytics-properties='{"destination":"github","label":"offerings-footer"}'>github.com/scottjoyner</a>
+    </div>
   </div>
 </footer>
+<script type="module" src="/site/scripts/analytics.js"></script>
 </body>
 </html>

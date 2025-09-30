@@ -1,14 +1,36 @@
 <!doctype html>
-<html><head>
+<html lang="en">
+<head>
   <meta charset="utf-8" />
   <title>Sign Documents</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="consult-backend" content="http://localhost:8081" />
   <link rel="stylesheet" href="/site/styles.css" />
-</head><body>
+</head>
+<body>
 <div class="container narrow">
   <h1>Sign Documents</h1>
   <p>Review documents, then complete signature request for Campbell Cognition Consultants LLC.</p>
-  <p><a class="btn" href="/proposal/proposal.html">Proposal</a> <a class="btn ghost" href="/retainer/retainer.html">Retainer</a></p>
+  <p>
+    <a class="btn" href="/proposal/proposal.html" data-analytics-event="cta_click" data-analytics-properties='{"location":"sign","action":"open-proposal"}'>Proposal</a>
+    <a class="btn ghost" href="/retainer/retainer.html" data-analytics-event="cta_click" data-analytics-properties='{"location":"sign","action":"open-retainer"}'>Retainer</a>
+  </p>
   <p class="muted small">Need help? Email <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a>.</p>
 </div>
-</body></html>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong>Campbell Cognition Consultants LLC</strong><br>
+      <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a>
+    </div>
+    <nav>
+      <a href="/site/offerings/">Offerings</a>
+      <a href="/site/legal/terms.html">Terms &amp; Conditions</a>
+      <a href="/site/legal/privacy.html">Privacy Policy</a>
+      <a href="/site/legal/cookies.html">Cookie Notice</a>
+    </nav>
+  </div>
+</footer>
+<script type="module" src="/site/scripts/analytics.js"></script>
+</body>
+</html>
