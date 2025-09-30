@@ -33,6 +33,20 @@ Analytics events are only persisted when visitors accept cookies via the consent
 4. Update the `<meta name="consult-backend">` tag in the HTML (or set `window.__CONSULT_BACKEND__`) when deploying to production so the frontend analytics and booking flows point to your live backend domain.
 5. Configure Stripe webhooks to call `https://YOUR_BACKEND/stripe/webhook` and update Google Calendar / n8n credentials in the environment file.
 
+## Testing & quality checks
+
+The backend exposes a modular Express application (`server/node/app.js`) so that the business logic can be exercised without starting the HTTP server. Vitest and Supertest cover the analytics APIs, Neo4j bootstrapper, and helper utilities.
+
+Run the automated test suite from `server/node`:
+
+```bash
+cd server/node
+npm install
+npm run test
+```
+
+Use `npm run test:watch` for an interactive watch mode while iterating locally. The coverage report is written to the terminal and `coverage/` directory (LCOV) for CI integration.
+
 ## CI/CD
 
 GitHub Actions (`.github/workflows/ci.yml`) lint the backend and render the Compose configuration on every push/PR. Extend the workflow with integration tests as services evolve.
