@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: server/node/package.json
+
+      - name: Install backend dependencies
+        working-directory: server/node
+        run: npm install
+
+      - name: Lint backend
+        working-directory: server/node
+        run: npm run lint
+
+      - name: Validate docker compose file
+        run: docker compose -f docker-compose.yml config

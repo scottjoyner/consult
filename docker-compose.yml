@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  neo4j:
+    image: neo4j:5.21
+    restart: unless-stopped
+    environment:
+      - NEO4J_AUTH=${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-neo4jpassword}
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_dbms_security_auth__enabled=true
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    env_file:
+      - .env
+    depends_on:
+      - neo4j
+    ports:
+      - "8081:8081"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    environment:
+      - BACKEND_URL=http://localhost:8081
+
+volumes:
+  neo4j_data:
+  neo4j_logs:

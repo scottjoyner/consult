@@ -1,9 +1,12 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8" />
-<title>Booked – Campbell Cognition Consultants LLC</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="stylesheet" href="/site/styles.css" /></head>
+<head>
+  <meta charset="utf-8" />
+  <title>Booked – Campbell Cognition Consultants LLC</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="consult-backend" content="http://localhost:8081" />
+  <link rel="stylesheet" href="/site/styles.css" />
+</head>
 <body>
 <div class="container narrow">
   <h1>Payment received 🎉</h1>
@@ -14,7 +17,7 @@
   <div id="client-companion-card" class="card hidden" aria-hidden="true">
     <h2>Campbell Companion (beta)</h2>
     <p>We’ve unlocked a private workspace with AI-assisted summaries and next-step prompts tailored to your engagement, complete with Highland-inspired briefings.</p>
-    <a class="btn" href="/site/client/companion.html">Open the companion</a>
+    <a class="btn" href="/site/client/companion.html" data-analytics-event="cta_click" data-analytics-properties='{"location":"post-checkout","action":"open-companion"}'>Open the companion</a>
     <p class="muted small">Only available to clients with an active payment. Bookmark the link for future sessions.</p>
   </div>
 </div>
@@ -30,4 +33,20 @@
     console.warn('Client companion unlock skipped:', err);
   }
 </script>
-</body></html>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong>Campbell Cognition Consultants LLC</strong><br>
+      <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a>
+    </div>
+    <nav>
+      <a href="/site/offerings/">Offerings</a>
+      <a href="/site/legal/terms.html">Terms &amp; Conditions</a>
+      <a href="/site/legal/privacy.html">Privacy Policy</a>
+      <a href="/site/legal/cookies.html">Cookie Notice</a>
+    </nav>
+  </div>
+</footer>
+<script type="module" src="/site/scripts/analytics.js"></script>
+</body>
+</html>

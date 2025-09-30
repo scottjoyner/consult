@@ -3,6 +3,8 @@ const lockout = document.getElementById('lockout');
 const chatLog = document.getElementById('chat-log');
 const form = document.getElementById('chat-form');
 const clearBtn = document.getElementById('clear-chat');
+const backendMeta = document.querySelector('meta[name="consult-backend"]');
+const backendBase = (window.cccAnalytics?.backendUrl || backendMeta?.content || '').replace(/\/$/, '');
 const paid = (() => {
   try {
     return localStorage.getItem('campbellcognition_client_paid') === 'true';
@@ -54,12 +56,17 @@ if (paid) {
   if (!chatLog.children.length) {
     appendMessage('assistant', 'Welcome back to the Campbell Companion. Share the architecture or AI questions you want us to prep before the next call.');
   }
+  window.cccAnalytics?.track('companion_access_granted');
 } else if (form) {
   form.classList.add('hidden');
+  window.cccAnalytics?.track('companion_access_blocked');
 }
 
 async function sendToBackend(message) {
-  const endpoint = 'https://YOUR_BACKEND/client/companion';
+  if (!backendBase) {
+    throw new Error('Backend URL is not configured.');
+  }
+  const endpoint = `${backendBase}/client/companion`;
   const body = { message };
   const res = await fetch(endpoint, {
     method: 'POST',
@@ -84,6 +91,7 @@ if (form) {
     if (!message) return;
 
     appendMessage('user', message);
+    window.cccAnalytics?.track('companion_message_sent', { length: message.length });
     const thinkingBubble = appendMessage('assistant', 'One sec… synthesizing a response.');
     form.reset();
 
@@ -91,9 +99,11 @@ if (form) {
       const payload = await sendToBackend(message);
       const reply = payload?.reply || 'Your AI workspace is ready to respond once the backend URL is configured.';
       thinkingBubble.textContent = reply;
+      window.cccAnalytics?.track('companion_message_resolved', { status: 'ok' });
     } catch (err) {
       console.error(err);
       thinkingBubble.textContent = 'We could not reach the AI workspace. Check the backend URL or try again later.';
+      window.cccAnalytics?.track('companion_message_resolved', { status: 'error' });
     }
     persistHistory();
   });
@@ -105,5 +115,6 @@ if (clearBtn) {
     chatLog.innerHTML = '';
     persistHistory();
     appendMessage('assistant', 'History cleared. Let us know what you\'d like to tackle next before our next gathering.');
+    window.cccAnalytics?.track('companion_history_cleared');
   });
 }

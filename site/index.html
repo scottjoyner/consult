@@ -5,6 +5,7 @@
   <title>Campbell Cognition Consultants LLC – Heritage Architecture & AI Advisory</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Campbell Cognition Consultants LLC blends Scottish heritage with modern software architecture, AI integrations, and automation advisory." />
+  <meta name="consult-backend" content="http://localhost:8081" />
   <link rel="stylesheet" href="/site/styles.css" />
 </head>
 <body>
@@ -26,8 +27,33 @@
     <h1>Scottish-rooted clarity for your architecture & AI roadmap.</h1>
     <p>From the Campbell clan’s legacy of stewardship to today’s cloud-native systems, we chart a steady path from discovery to delivery with warmth, rigor, and transparency.</p>
     <div class="cta-row">
-      <a class="btn" href="/site/book/">Book a 25-min Clarity Call ($100)</a>
-      <a class="btn ghost" href="/site/offerings/index.html">Explore Our Highland Services</a>
+      <a class="btn" href="/site/book/" data-analytics-event="conversion" data-analytics-properties='{"location":"hero","action":"book-clarity-call"}'>Book a 25-min Clarity Call ($100)</a>
+      <a class="btn ghost" href="/site/offerings/index.html" data-analytics-event="cta_click" data-analytics-properties='{"location":"hero","action":"explore-services"}'>Explore Our Highland Services</a>
+    </div>
+  </div>
+</section>
+
+<section class="metrics" aria-labelledby="metrics-heading">
+  <div class="container">
+    <h2 id="metrics-heading">Live funnel snapshot</h2>
+    <p class="muted small">Consent-driven analytics flowing into Neo4j show how visitors move from discovery into booked consultations.</p>
+    <div class="metrics-grid" data-analytics-metrics>
+      <article class="metric-card">
+        <span class="metric-label">Site visitors</span>
+        <span class="metric-value" data-metric="visitors">--</span>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Tracked actions</span>
+        <span class="metric-value" data-metric="events">--</span>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Conversions</span>
+        <span class="metric-value" data-metric="conversions">--</span>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Conversion rate</span>
+        <span class="metric-value" data-metric="conversion-rate">--</span>
+      </article>
     </div>
   </div>
 </section>
@@ -101,6 +127,42 @@
   </div>
 </section>
 
+<section class="container proof-of-work" aria-labelledby="proof-heading">
+  <h2 id="proof-heading">Proof of work & ongoing innovation</h2>
+  <p>Review Scott Joyner’s public delivery record to validate technical depth, architectural decision logs, and the rate of iteration your roadmap will receive.</p>
+  <ul class="link-list">
+    <li><a href="https://github.com/scottjoyner" target="_blank" rel="noopener" data-analytics-event="outbound_click" data-analytics-properties='{"destination":"github","label":"GitHub Portfolio"}'>GitHub Portfolio – github.com/scottjoyner</a></li>
+    <li><a href="https://github.com/scottjoyner?tab=repositories" target="_blank" rel="noopener" data-analytics-event="outbound_click" data-analytics-properties='{"destination":"github","label":"Highlighted Repositories"}'>Highlighted repositories showcasing automation, AI enablement, and first-principles architecture.</a></li>
+    <li><a href="https://github.com/scottjoyner?tab=projects" target="_blank" rel="noopener" data-analytics-event="outbound_click" data-analytics-properties='{"destination":"github","label":"Project Boards"}'>Project boards with traceable worklogs and proof-of-work artifacts ready for due diligence.</a></li>
+  </ul>
+</section>
+
+<section class="testimonials" aria-labelledby="voices-heading">
+  <div class="container">
+    <h2 id="voices-heading">Customer voices from the field</h2>
+    <div class="testimonials-grid">
+      <figure class="testimonial">
+        <blockquote>
+          “Scott guided us through a cloud migration with zero downtime and left the team with clear runbooks. The blend of empathy and rigor was unmatched.”
+        </blockquote>
+        <figcaption>– VP of Engineering, FinTech Scaleup</figcaption>
+      </figure>
+      <figure class="testimonial">
+        <blockquote>
+          “The Campbell Cognition roadmap paired architecture guardrails with AI enablement that our compliance team approved on first pass.”
+        </blockquote>
+        <figcaption>– Director of Platform Engineering, Regulated Healthcare Provider</figcaption>
+      </figure>
+      <figure class="testimonial">
+        <blockquote>
+          “In two weeks we had automated customer onboarding and shipped a new RAG-powered assistant. The cadence and communication felt like an extension of our core team.”
+        </blockquote>
+        <figcaption>– COO, B2B SaaS Company</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <section class="container">
   <h2>Timeline after the intro call</h2>
   <ol class="timeline">
@@ -109,18 +171,33 @@
     <li><strong>Day 2–3</strong> – Kick-off prep: access requests, project workspace, and success metrics alignment.</li>
     <li><strong>Week 1</strong> – First deliverable milestone or architecture review session.</li>
   </ol>
-  <a class="btn" href="/site/book/">Book the Clarity Call ($100)</a>
+  <a class="btn" href="/site/book/" data-analytics-event="conversion" data-analytics-properties='{"location":"timeline","action":"book-clarity-call"}'>Book the Clarity Call ($100)</a>
 </section>
 
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div><strong>Campbell Cognition Consultants LLC</strong><br><a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a></div>
+    <div>
+      <strong>Campbell Cognition Consultants LLC</strong><br>
+      <a href="mailto:hello@campbellcognition.com">hello@campbellcognition.com</a><br>
+      <span class="muted small">Serving regulated industries with container-first architecture &amp; AI advisory.</span>
+    </div>
     <nav>
       <a href="/site/offerings/">Offerings</a>
       <a href="/site/contact/">Contact</a>
       <a href="/site/sign/">Sign</a>
+      <a href="/site/legal/terms.html">Terms &amp; Conditions</a>
+      <a href="/site/legal/privacy.html">Privacy Policy</a>
+      <a href="/site/legal/cookies.html">Cookie Notice</a>
     </nav>
+    <div>
+      <strong>Proof of work</strong><br>
+      <a href="https://github.com/scottjoyner" target="_blank" rel="noopener" data-analytics-event="outbound_click" data-analytics-properties='{"destination":"github","label":"Footer"}'>github.com/scottjoyner</a>
+    </div>
+  </div>
+  <div class="container legal-note">
+    <small>© 2024 Campbell Cognition Consultants LLC. All rights reserved.</small>
   </div>
 </footer>
+<script type="module" src="/site/scripts/analytics.js"></script>
 </body>
 </html>

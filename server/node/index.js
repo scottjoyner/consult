@@ -5,10 +5,45 @@ import cors from 'cors';
 import Stripe from 'stripe';
 import { google } from 'googleapis';
 import fetch from 'node-fetch';
+import neo4j from 'neo4j-driver';
 
 const app = express();
 app.use(cors({ origin: process.env.ORIGIN?.split(',') || true }));
 app.use(bodyParser.json({ verify: (req, res, buf) => { req.rawBody = buf; }}));
+
+const neo4jConfigured = Boolean(process.env.NEO4J_URI && process.env.NEO4J_USER && process.env.NEO4J_PASSWORD);
+const neo4jDatabase = process.env.NEO4J_DATABASE || undefined;
+const neo4jDriver = neo4jConfigured
+  ? neo4j.driver(
+      process.env.NEO4J_URI,
+      neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
+      { disableLosslessIntegers: true }
+    )
+  : null;
+
+async function ensureGraphSetup() {
+  if (!neo4jDriver) {
+    console.warn('Neo4j configuration missing – analytics endpoints disabled.');
+    return;
+  }
+  try {
+    await neo4jDriver.executeQuery(
+      'CREATE CONSTRAINT IF NOT EXISTS FOR (v:Visitor) REQUIRE v.sessionId IS UNIQUE',
+      {},
+      { database: neo4jDatabase }
+    );
+    await neo4jDriver.executeQuery(
+      'CREATE CONSTRAINT IF NOT EXISTS FOR (e:Event) REQUIRE e.id IS UNIQUE',
+      {},
+      { database: neo4jDatabase }
+    );
+    console.log('Neo4j analytics constraints ensured.');
+  } catch (err) {
+    console.error('Failed to prepare Neo4j constraints', err);
+  }
+}
+
+ensureGraphSetup();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' });
 
@@ -159,5 +194,113 @@ ${md.notes || ''}`,
   res.json({ received: true });
 });
 
+app.post('/analytics/events', async (req, res) => {
+  if (!neo4jDriver) {
+    return res.status(503).json({ error: 'Analytics storage not configured' });
+  }
+
+  const { eventType, sessionId, page = null, properties = {} } = req.body || {};
+  if (!eventType || !sessionId) {
+    return res.status(400).json({ error: 'eventType and sessionId are required' });
+  }
+
+  if (typeof properties !== 'object' || Array.isArray(properties)) {
+    return res.status(400).json({ error: 'properties must be an object' });
+  }
+
+  const timestamp = new Date().toISOString();
+
+  try {
+    await neo4jDriver.executeQuery(
+      `MERGE (v:Visitor {sessionId: $sessionId})
+       ON CREATE SET v.firstSeen = datetime($timestamp)
+       SET v.lastSeen = datetime($timestamp)
+       CREATE (e:Event {
+         id: randomUUID(),
+         type: $eventType,
+         page: $page,
+         timestamp: datetime($timestamp),
+         properties: $properties
+       })
+       MERGE (v)-[:PERFORMED]->(e)`,
+      { sessionId, eventType, page, timestamp, properties },
+      { database: neo4jDatabase }
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Failed to persist analytics event', err);
+    res.status(500).json({ error: 'Failed to persist analytics event' });
+  }
+});
+
+app.post('/client/companion', async (req, res) => {
+  const { message } = req.body || {};
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required' });
+  }
+
+  if (process.env.COMPANION_WEBHOOK) {
+    try {
+      const response = await fetch(process.env.COMPANION_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      if (!response.ok) {
+        throw new Error(`Companion webhook failed (${response.status})`);
+      }
+      const data = await response.json();
+      return res.json({ reply: data.reply || 'Response received.' });
+    } catch (err) {
+      console.error('Companion webhook error', err);
+      return res.status(502).json({ error: 'Companion service error' });
+    }
+  }
+
+  res.json({ reply: 'Your workspace is ready once the companion backend URL is configured.' });
+});
+
+app.get('/analytics/metrics', async (req, res) => {
+  if (!neo4jDriver) {
+    return res.status(503).json({ error: 'Analytics storage not configured' });
+  }
+
+  try {
+    const [visitorsResult, conversionsResult, eventsResult] = await Promise.all([
+      neo4jDriver.executeQuery('MATCH (v:Visitor) RETURN count(v) AS visitors', {}, { database: neo4jDatabase }),
+      neo4jDriver.executeQuery(
+        "MATCH (:Visitor)-[:PERFORMED]->(e:Event { type: 'conversion' }) RETURN count(e) AS conversions",
+        {},
+        { database: neo4jDatabase }
+      ),
+      neo4jDriver.executeQuery(
+        'MATCH (:Visitor)-[:PERFORMED]->(e:Event) RETURN count(e) AS totalEvents',
+        {},
+        { database: neo4jDatabase }
+      )
+    ]);
+
+    const visitors = visitorsResult.records[0]?.get('visitors') || 0;
+    const conversions = conversionsResult.records[0]?.get('conversions') || 0;
+    const totalEvents = eventsResult.records[0]?.get('totalEvents') || 0;
+    const conversionRate = visitors ? Number((conversions / visitors).toFixed(3)) : 0;
+
+    res.json({ visitors, conversions, totalEvents, conversionRate });
+  } catch (err) {
+    console.error('Failed to load analytics metrics', err);
+    res.status(500).json({ error: 'Failed to load analytics metrics' });
+  }
+});
+
 const port = process.env.PORT || 8081;
 app.listen(port, () => console.log(`Backend listening on :${port}`));
+
+const gracefulShutdown = async () => {
+  if (neo4jDriver) {
+    await neo4jDriver.close();
+  }
+  process.exit(0);
+};
+
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);

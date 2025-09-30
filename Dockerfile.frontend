@@ -1,0 +1,10 @@
+FROM nginx:1.27-alpine
+
+COPY site /usr/share/nginx/html/site
+COPY proposal /usr/share/nginx/html/proposal
+COPY retainer /usr/share/nginx/html/retainer
+COPY emails /usr/share/nginx/html/emails
+COPY site/index.html /usr/share/nginx/html/index.html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
